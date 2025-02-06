@@ -1,10 +1,12 @@
+# Den Code weiter anpassen, um sicherzustellen, dass der "Nein"-Button korrekt
+positioniert ist. final_adjusted_code = """
 <template>
   <div
     class="absolute left-1/2 top-1/2 w-full max-w-[90%] sm:max-w-[700px] aspect-[1.4/1] rounded-lg p-6 flex items-center justify-center cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
   >
     <div
       v-if="!clickedYes"
-      class="w-[400px] h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-8 pt-16"
+      class="w-[400px] h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-8 pt-16 relative"
     >
       <h1 class="text-4xl font-bold text-[#E74C3C] mb-6">
         Willst du mein Valentinsdate sein?
@@ -21,8 +23,8 @@
       <button
         @mouseover="moveButton"
         :style="{
-          top: buttonPosition.top + 'px',
-          left: buttonPosition.left + 'px',
+          top: `${buttonPosition.top}px`,
+          left: `${buttonPosition.left}px`,
         }"
         class="absolute text-[#E74C3C] text-xs md:text-sm rounded-lg px-3 md:px-4 py-1.5 md:py-2 bg-white"
       >
@@ -31,7 +33,7 @@
     </div>
     <div v-if="clickedYes">
       <div
-        class="w-[400px] cursor-auto h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-8"
+        class="w-[400px] cursor-auto h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-0"
       >
         <div class="mb-6">
           <img
@@ -51,6 +53,7 @@
 
 <script setup>
 import { reactive, onMounted, ref, nextTick } from "vue";
+
 const clickedYes = ref(false);
 const buttonPosition = reactive({
   top: 0,
@@ -58,12 +61,14 @@ const buttonPosition = reactive({
 });
 
 const yesButton = ref(null);
+
 const moveButton = () => {
-  const randomTop = Math.floor(Math.random() * 350) + 50; // Zufällige Position in einem Bereich
+  const randomTop = Math.floor(Math.random() * 350) + 50; // Zufällige Position
   const randomLeft = Math.floor(Math.random() * 300) + 50;
   buttonPosition.top = randomTop;
   buttonPosition.left = randomLeft;
 };
+
 const setInitialButtonPosition = () => {
   if (yesButton.value) {
     const btnRect = yesButton.value.getBoundingClientRect();
@@ -78,9 +83,10 @@ const setInitialButtonPosition = () => {
 };
 
 onMounted(async () => {
-  await nextTick();
+  await nextTick(); // Sicherstellen, dass der DOM vollständig gerendert ist
   setInitialButtonPosition();
 });
+
 const handleYes = () => {
   clickedYes.value = true;
 };
