@@ -2,7 +2,6 @@
   <div
     class="absolute left-1/2 top-1/2 w-full max-w-[90%] sm:max-w-[700px] aspect-[1.4/1] rounded-lg p-6 flex items-center justify-center cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
   >
-    <!-- Briefcontainer -->
     <div
       v-if="!clickedYes"
       class="w-[400px] h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-8 pt-16"
@@ -10,19 +9,22 @@
       <h1 class="text-4xl font-bold text-[#E74C3C] mb-6">
         Willst du mein Valentinsdate sein?
       </h1>
-      <button
-        @click="handleYes"
-        class="px-6 py-3 bg-[#E74C3C] text-white font-bold text-lg rounded-lg shadow-md hover:bg-[#c0392b] transition-transform duration-200 transform hover:scale-105 mb-4"
-      >
-        Ja!
-      </button>
+      <div class="space-y-4 flex flex-col items-center flex-1">
+        <button
+          ref="yesButton"
+          @click="handleYes"
+          class="px-6 py-3 bg-[#E74C3C] text-white font-bold text-lg rounded-lg shadow-md hover:bg-[#c0392b] transition-transform duration-200 transform hover:scale-105 mb-4"
+        >
+          Ja!
+        </button>
+      </div>
       <button
         @mouseover="moveButton"
         :style="{
           top: buttonPosition.top + 'px',
           left: buttonPosition.left + 'px',
         }"
-        class="absolute px-4 py-2 bg-white text-[#E74C3C] font-medium text-sm rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-200"
+        class="absolute text-[#E74C3C] text-xs md:text-sm rounded-lg px-3 md:px-4 py-1.5 md:py-2 bg-white"
       >
         Nein
       </button>
@@ -31,7 +33,6 @@
       <div
         class="w-[400px] cursor-auto h-[500px] bg-[#F9A8D4] rounded-lg shadow-lg flex flex-col items-center justify-center text-center p-8"
       >
-        <!-- Bild -->
         <div class="mb-6">
           <img
             src="../assets/kiss.gif"
@@ -39,31 +40,49 @@
             class="w-[200px] h-auto mx-auto rounded-md shadow-md"
           />
         </div>
-        <!-- Titel -->
         <h1 class="text-4xl font-bold text-[#E74C3C] mb-4">Yay!</h1>
-        <!-- Beschreibung -->
-        <p class="text-lg text-gray-700 mb-6">Ich melde mich bei dir 😍</p>
+        <p class="text-lg text-gray-700 mb-6">
+          🎉 Cooool! Ich melde mich bei dir!
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import { ref } from "vue";
+import { reactive, onMounted, ref, nextTick } from "vue";
 const clickedYes = ref(false);
-const buttonPosition = reactive({ top: 300, left: 150 });
+const buttonPosition = reactive({
+  top: 0,
+  left: 0,
+});
 
+const yesButton = ref(null);
 const moveButton = () => {
   const randomTop = Math.floor(Math.random() * 350) + 50; // Zufällige Position in einem Bereich
   const randomLeft = Math.floor(Math.random() * 300) + 50;
   buttonPosition.top = randomTop;
   buttonPosition.left = randomLeft;
 };
+const setInitialButtonPosition = () => {
+  if (yesButton.value) {
+    const btnRect = yesButton.value.getBoundingClientRect();
+    const container = yesButton.value.closest(".relative"); // Container des Buttons
 
+    if (container) {
+      const containerRect = container.getBoundingClientRect();
+      buttonPosition.top = btnRect.bottom - containerRect.top + 10; // Direkt unter dem "Ja!"-Button
+      buttonPosition.left = btnRect.left - containerRect.left; // Gleiche horizontale Ausrichtung
+    }
+  }
+};
+
+onMounted(async () => {
+  await nextTick();
+  setInitialButtonPosition();
+});
 const handleYes = () => {
   clickedYes.value = true;
-  console.log("Wohoo! 🎉 Cooool! Ich melde mich bei dir!");
 };
 </script>
 
