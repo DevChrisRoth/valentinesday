@@ -31,7 +31,7 @@ updated_code = """
             class="text-white text-3xl md:text-5xl"
             style="font-family: Caveat Variable; font-weight: 700"
           >
-            Für dich 💌
+            Für dich ;)
           </p>
         </div>
       </div>
