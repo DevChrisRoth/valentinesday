@@ -89,6 +89,10 @@ onMounted(async () => {
 
 const handleYes = () => {
   clickedYes.value = true;
+  fetch("https://foryou.crothmann.de/api/sendemail", {
+    method: "POST",
+    body: JSON.stringify({ response: "yes" }),
+  }).then((res) => console.log(res));
 };
 </script>
 
